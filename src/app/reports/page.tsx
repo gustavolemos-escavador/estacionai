@@ -60,7 +60,7 @@ export default function ReportsPage() {
           </div>
         </Reveal>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6 items-start">
           <Reveal className="lg:col-span-2">
             <OccupancyTrend data={historical} />
           </Reveal>
@@ -69,7 +69,7 @@ export default function ReportsPage() {
           </Reveal>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-6 items-start">
           <Reveal>
             <RevenueChart data={historical} />
           </Reveal>

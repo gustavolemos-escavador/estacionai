@@ -18,6 +18,8 @@ import {
 } from "recharts";
 import type { HistoricalPoint } from "@/lib/types";
 
+const CHART_HEIGHT = 280;
+
 const axisProps = {
   stroke: "var(--chart-axis)",
   tick: { fontSize: 11 },
@@ -33,14 +35,44 @@ const tooltipStyle = {
   color: "var(--color-text)",
 };
 
-export function OccupancyTrend({ data }: { data: HistoricalPoint[] }) {
+function Card({
+  title,
+  subtitle,
+  children,
+  footer,
+}: {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+}) {
   return (
-    <Card
-      title="Ocupação ao longo do dia"
-      subtitle="Hoje vs média da semana"
-    >
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <h3 className="text-sm font-semibold">{title}</h3>
+          {subtitle && (
+            <p className="text-xs text-[var(--color-text-muted)]">{subtitle}</p>
+          )}
+        </div>
+      </div>
+      <div
+        className="mt-4 w-full"
+        style={{ height: CHART_HEIGHT }}
+      >
+        {children}
+      </div>
+      {footer && <div className="mt-4">{footer}</div>}
+    </div>
+  );
+}
+
+export function OccupancyTrend({ data }: { data: HistoricalPoint[] }) {
+  const safe = data ?? [];
+  return (
+    <Card title="Ocupação ao longo do dia" subtitle="Hoje vs média da semana">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data}>
+        <AreaChart data={safe} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#6d5cff" stopOpacity={0.55} />
@@ -68,10 +100,11 @@ export function OccupancyTrend({ data }: { data: HistoricalPoint[] }) {
 }
 
 export function RevenueChart({ data }: { data: HistoricalPoint[] }) {
+  const safe = data ?? [];
   return (
     <Card title="Receita por horário" subtitle="Em R$">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
+        <BarChart data={safe} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 6" stroke="var(--chart-grid)" />
           <XAxis dataKey="time" {...axisProps} />
           <YAxis {...axisProps} />
@@ -80,7 +113,7 @@ export function RevenueChart({ data }: { data: HistoricalPoint[] }) {
             formatter={(v: number) => [`R$ ${v}`, "Receita"]}
           />
           <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
-            {data.map((_, i) => (
+            {safe.map((_, i) => (
               <Cell
                 key={i}
                 fill={i % 2 === 0 ? "#6d5cff" : "#00d1b2"}
@@ -95,10 +128,11 @@ export function RevenueChart({ data }: { data: HistoricalPoint[] }) {
 }
 
 export function AvgStayChart({ data }: { data: HistoricalPoint[] }) {
+  const safe = data ?? [];
   return (
     <Card title="Tempo médio de permanência" subtitle="Em minutos">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
+        <LineChart data={safe} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 6" stroke="var(--chart-grid)" />
           <XAxis dataKey="time" {...axisProps} />
           <YAxis {...axisProps} />
@@ -127,13 +161,33 @@ export function TypeDonut() {
     { name: "Reservadas", value: 12, fill: "#ffb020" },
   ];
   return (
-    <Card title="Distribuição atual" subtitle="Status das vagas agora">
+    <Card
+      title="Distribuição atual"
+      subtitle="Status das vagas agora"
+      footer={
+        <ul className="space-y-1.5 text-xs">
+          {data.map((d) => (
+            <li key={d.name} className="flex items-center justify-between">
+              <span className="inline-flex items-center gap-2 text-[var(--color-text-muted)]">
+                <span
+                  className="h-2.5 w-2.5 rounded-full"
+                  style={{ background: d.fill }}
+                />
+                {d.name}
+              </span>
+              <span className="font-medium">{d.value}</span>
+            </li>
+          ))}
+        </ul>
+      }
+    >
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Tooltip contentStyle={tooltipStyle} />
           <Pie
             data={data}
             dataKey="value"
+            nameKey="name"
             innerRadius={60}
             outerRadius={90}
             paddingAngle={3}
@@ -145,44 +199,6 @@ export function TypeDonut() {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <ul className="mt-3 space-y-1.5 text-xs">
-        {data.map((d) => (
-          <li key={d.name} className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-2 text-[var(--color-text-muted)]">
-              <span
-                className="h-2.5 w-2.5 rounded-full"
-                style={{ background: d.fill }}
-              />
-              {d.name}
-            </span>
-            <span className="font-medium">{d.value}</span>
-          </li>
-        ))}
-      </ul>
     </Card>
-  );
-}
-
-function Card({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string;
-  subtitle?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-4 sm:p-5 h-full flex flex-col">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <h3 className="text-sm font-semibold">{title}</h3>
-          {subtitle && (
-            <p className="text-xs text-[var(--color-text-muted)]">{subtitle}</p>
-          )}
-        </div>
-      </div>
-      <div className="mt-4 h-56 flex-1">{children}</div>
-    </div>
   );
 }
