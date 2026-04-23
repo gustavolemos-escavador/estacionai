@@ -53,7 +53,7 @@ export default function ScrollStory() {
             </p>
 
             <div className="relative">
-              <div className="absolute -left-1 top-1 h-full w-px bg-white/10 hidden md:block" />
+              <div className="absolute -left-1 top-1 h-full w-px bg-[var(--color-border)] hidden md:block" />
               <motion.div
                 style={{ height: progress }}
                 className="absolute -left-1 top-1 w-px bg-gradient-to-b from-[var(--color-brand)] to-[var(--color-brand-2)] hidden md:block"
@@ -106,12 +106,12 @@ function Step({
 
   return (
     <motion.div style={{ opacity, x }} className="relative">
-      <span className="absolute -left-10 top-1 hidden md:flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-surface-2)] border border-white/10 text-xs">
+      <span className="absolute -left-10 top-1 hidden md:flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-surface-2)] border border-[var(--color-border)] text-xs">
         {index + 1}
       </span>
       <div className="flex items-start gap-3">
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-brand)]/20 to-[var(--color-brand-2)]/20 border border-white/10">
-          <Icon size={18} className="text-white" />
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-brand)]/20 to-[var(--color-brand-2)]/20 border border-[var(--color-border)]">
+          <Icon size={18} className="text-[var(--color-text)]" />
         </span>
         <div>
           <h3 className="text-xl sm:text-2xl font-semibold">{title}</h3>
@@ -146,7 +146,7 @@ function ParallaxPreview({ progress }: { progress: import("framer-motion").Motio
                   className={`aspect-square rounded ${
                     on
                       ? "bg-[var(--color-brand)]/70"
-                      : "bg-white/5 border border-white/5"
+                      : "bg-[var(--color-overlay-soft)] border border-[var(--color-border)]"
                   }`}
                 />
               );
@@ -157,7 +157,7 @@ function ParallaxPreview({ progress }: { progress: import("framer-motion").Motio
 
       <motion.div
         style={{ y: y2 }}
-        className="absolute -bottom-6 -right-6 w-64 glass rounded-2xl p-4 shadow-2xl shadow-black/40"
+        className="absolute -bottom-6 -right-6 w-64 glass rounded-2xl p-4 shadow-2xl shadow-[var(--color-shadow)]"
       >
         <div className="text-xs text-[var(--color-text-muted)]">Notificação</div>
         <div className="mt-1 text-sm font-medium">

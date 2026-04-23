@@ -58,8 +58,8 @@ export default function Home() {
               const Icon = b.icon;
               return (
                 <Reveal key={b.title} delay={i * 0.08}>
-                  <div className="group h-full rounded-2xl border border-white/10 bg-[var(--color-surface)]/60 p-5 hover:border-white/20 transition-colors">
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-brand)]/20 to-[var(--color-brand-2)]/20 border border-white/10">
+                  <div className="group h-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/60 p-5 hover:bg-[var(--color-surface-2)] transition-colors">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-brand)]/20 to-[var(--color-brand-2)]/20 border border-[var(--color-border)]">
                       <Icon size={18} />
                     </span>
                     <h3 className="mt-4 text-lg font-semibold">{b.title}</h3>
@@ -77,7 +77,7 @@ export default function Home() {
       <section className="relative py-24">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <Reveal>
-            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[var(--color-brand)]/20 via-transparent to-[var(--color-brand-2)]/20 p-10 sm:p-14">
+            <div className="relative overflow-hidden rounded-3xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-brand)]/20 via-transparent to-[var(--color-brand-2)]/20 p-10 sm:p-14">
               <div className="absolute inset-0 grid-lines opacity-30 pointer-events-none" />
               <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div>
@@ -91,7 +91,7 @@ export default function Home() {
                 </div>
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-xl bg-white text-black px-5 py-3 text-sm font-semibold hover:bg-white/90 transition"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[var(--color-text)] text-[var(--color-surface)] px-5 py-3 text-sm font-semibold hover:opacity-90 transition"
                 >
                   Entrar no painel <ArrowRight size={16} />
                 </Link>

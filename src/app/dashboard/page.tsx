@@ -29,7 +29,7 @@ export default function DashboardPage() {
         actions={
           <Link
             href="/inbox"
-            className="relative inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+            className="relative inline-flex items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] px-4 py-2 text-sm hover:bg-[var(--color-overlay-strong)] transition"
           >
             <Bell size={16} />
             Caixa de entrada
@@ -56,7 +56,7 @@ export default function DashboardPage() {
             <div className="space-y-6">
               <OccupancyChart data={historical} />
 
-              <div className="rounded-2xl border border-white/10 bg-[var(--color-surface)]/70 p-4 sm:p-6">
+              <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold">Setores</h3>
                   <span className="text-xs text-[var(--color-text-muted)]">
@@ -74,7 +74,7 @@ export default function DashboardPage() {
                             {s.free} livres · {pct}% ocupação
                           </span>
                         </div>
-                        <div className="mt-1.5 h-2 rounded-full bg-white/5 overflow-hidden">
+                        <div className="mt-1.5 h-2 rounded-full bg-[var(--chart-track)] overflow-hidden">
                           <div
                             className="h-full rounded-full bg-gradient-to-r from-[var(--color-brand)] to-[var(--color-brand-2)]"
                             style={{ width: `${pct}%` }}

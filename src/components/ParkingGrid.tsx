@@ -16,8 +16,8 @@ const STATUS_STYLES: Record<
     text: "text-[var(--color-ok)]",
   },
   occupied: {
-    bg: "bg-white/[0.04]",
-    border: "border-white/10",
+    bg: "bg-[var(--color-overlay-soft)]",
+    border: "border-[var(--color-border)]",
     label: "Ocupada",
     text: "text-[var(--color-text-muted)]",
   },
@@ -86,7 +86,7 @@ export default function ParkingGrid({
   }, [spots, selectedSector]);
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-[var(--color-surface)]/70 p-4 sm:p-6">
+    <section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-4 sm:p-6">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
         <div>
           <h2 className="text-xl font-semibold">Mapa de vagas ao vivo</h2>
@@ -96,15 +96,15 @@ export default function ParkingGrid({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex rounded-xl border border-white/10 bg-white/[0.03] p-1">
+          <div className="inline-flex rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] p-1">
             {sectors.map((s) => (
               <button
                 key={s}
                 onClick={() => setSelectedSector(s)}
                 className={`px-3 py-1.5 text-sm rounded-lg transition ${
                   selectedSector === s
-                    ? "bg-white/10 text-white"
-                    : "text-[var(--color-text-muted)] hover:text-white"
+                    ? "bg-[var(--color-overlay-strong)] text-[var(--color-text)]"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
                 }`}
               >
                 Setor {s}
@@ -112,7 +112,7 @@ export default function ParkingGrid({
             ))}
           </div>
 
-          <div className="inline-flex rounded-xl border border-white/10 bg-white/[0.03] p-1">
+          <div className="inline-flex rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] p-1">
             {(
               [
                 ["all", "Todas"],
@@ -127,8 +127,8 @@ export default function ParkingGrid({
                 onClick={() => setFilter(key)}
                 className={`px-3 py-1.5 text-xs rounded-lg transition ${
                   filter === key
-                    ? "bg-white/10 text-white"
-                    : "text-[var(--color-text-muted)] hover:text-white"
+                    ? "bg-[var(--color-overlay-strong)] text-[var(--color-text)]"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
                 }`}
               >
                 {label}
@@ -164,7 +164,7 @@ export default function ParkingGrid({
                   <Car size={14} className={st.text} />
                 )}
                 {spot.status === "occupied" && (
-                  <span className="h-1.5 w-5 rounded-full bg-white/20" />
+                  <span className="h-1.5 w-5 rounded-full bg-[var(--chart-track)]" />
                 )}
                 {spot.status === "reserved" && (
                   <Lock size={12} className={st.text} />
@@ -183,7 +183,7 @@ export default function ParkingGrid({
         <Legend className="bg-[var(--color-ok)]/15 border border-[var(--color-ok)]/40">
           Livre
         </Legend>
-        <Legend className="bg-white/[0.04] border border-white/10">
+        <Legend className="bg-[var(--color-overlay-soft)] border border-[var(--color-border)]">
           Ocupada
         </Legend>
         <Legend className="bg-[var(--color-warn)]/15 border border-[var(--color-warn)]/40">
@@ -222,13 +222,13 @@ function Stat({
   tone?: "default" | "ok" | "warn" | "muted";
 }) {
   const map: Record<string, string> = {
-    default: "text-white",
+    default: "text-[var(--color-text)]",
     ok: "text-[var(--color-ok)]",
     warn: "text-[var(--color-warn)]",
     muted: "text-[var(--color-text-muted)]",
   };
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] p-3">
       <div className="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">
         {label}
       </div>

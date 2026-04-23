@@ -24,7 +24,7 @@ export default function ReportsPage() {
         description="Acompanhe ocupação, receita e tempo médio de permanência. Exporte relatórios e compartilhe com o time."
         actions={
           <>
-            <button className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition">
+            <button className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] px-4 py-2 text-sm hover:bg-[var(--color-overlay-strong)] transition">
               <Calendar size={16} /> Últimos 7 dias
             </button>
             <button className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--color-brand)] to-[var(--color-brand-2)] px-4 py-2 text-sm font-medium text-white shadow-lg shadow-[var(--color-brand)]/20 hover:shadow-[var(--color-brand)]/40 transition">
@@ -58,11 +58,11 @@ export default function ReportsPage() {
         </div>
 
         <Reveal>
-          <div className="rounded-2xl border border-white/10 bg-[var(--color-surface)]/70 p-4 sm:p-6 overflow-x-auto">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-4 sm:p-6 overflow-x-auto">
             <h3 className="text-base font-semibold mb-3">Resumo por setor</h3>
             <table className="w-full text-sm min-w-[560px]">
               <thead className="text-left text-xs uppercase tracking-wider text-[var(--color-text-muted)]">
-                <tr className="border-b border-white/10">
+                <tr className="border-b border-[var(--color-border)]">
                   <th className="py-2 pr-4">Setor</th>
                   <th className="py-2 pr-4">Total</th>
                   <th className="py-2 pr-4">Livres</th>
@@ -77,7 +77,7 @@ export default function ReportsPage() {
                   return (
                     <tr
                       key={s.id}
-                      className="border-b border-white/5 hover:bg-white/[0.02]"
+                      className="border-b border-[var(--color-border)] hover:bg-[var(--color-overlay-soft)]"
                     >
                       <td className="py-3 pr-4 font-medium">{s.name}</td>
                       <td className="py-3 pr-4">{s.total}</td>
@@ -90,7 +90,7 @@ export default function ReportsPage() {
                       </td>
                       <td className="py-3 pr-4">
                         <div className="flex items-center gap-2">
-                          <div className="h-1.5 w-28 rounded-full bg-white/5 overflow-hidden">
+                          <div className="h-1.5 w-28 rounded-full bg-[var(--chart-track)] overflow-hidden">
                             <div
                               className="h-full rounded-full bg-gradient-to-r from-[var(--color-brand)] to-[var(--color-brand-2)]"
                               style={{ width: `${pct}%` }}

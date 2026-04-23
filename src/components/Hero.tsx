@@ -33,7 +33,7 @@ export default function Hero() {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="flex flex-col items-center text-center gap-6"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-[var(--color-text-muted)]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-overlay-soft)] px-3 py-1 text-xs text-[var(--color-text-muted)]">
             <Sparkles size={12} className="text-[var(--color-brand-2)]" />
             Beta aberto · Hackathon Escavador
           </span>
@@ -60,7 +60,7 @@ export default function Hero() {
             </Link>
             <Link
               href="/reports"
-              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm text-white hover:bg-white/10 transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] px-6 py-3 text-sm text-[var(--color-text)] hover:bg-[var(--color-overlay-strong)] transition-colors"
             >
               Ver relatórios
             </Link>
@@ -82,8 +82,8 @@ function HeroPreview() {
       className="relative mt-14 mx-auto max-w-5xl"
       style={{ perspective: 1200 }}
     >
-      <div className="glass rounded-3xl p-3 shadow-2xl shadow-black/50">
-        <div className="rounded-2xl border border-white/10 bg-[var(--color-surface)] p-5 sm:p-7">
+      <div className="glass rounded-3xl p-3 shadow-2xl shadow-[var(--color-shadow)]">
+        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-7">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
               <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
@@ -108,7 +108,7 @@ function HeroPreview() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + i * 0.08 }}
-                className="rounded-xl border border-white/5 bg-white/[0.03] p-3"
+                className="rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] p-3"
               >
                 <div className="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">
                   {s.k}
@@ -130,7 +130,7 @@ function HeroPreview() {
                   className={`aspect-[1.4/1] rounded-md flex items-center justify-center ${
                     free
                       ? "bg-[var(--color-ok)]/15 border border-[var(--color-ok)]/30"
-                      : "bg-white/5 border border-white/5"
+                      : "bg-[var(--color-overlay-soft)] border border-[var(--color-border)]"
                   }`}
                 >
                   {free ? (

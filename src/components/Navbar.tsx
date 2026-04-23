@@ -3,8 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Bell, CarFront, LayoutDashboard, LineChart, Menu, X } from "lucide-react";
+import {
+  Bell,
+  CarFront,
+  LayoutDashboard,
+  LineChart,
+  Menu,
+  Moon,
+  Sun,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 
 const NAV = [
   { href: "/", label: "Início", icon: CarFront },
@@ -15,8 +25,10 @@ const NAV = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { resolvedTheme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -28,6 +40,16 @@ export default function Navbar() {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = resolvedTheme === "dark";
+
+  const toggleTheme = () => {
+    setTheme(isDark ? "light" : "dark");
+  };
 
   return (
     <motion.header
@@ -41,7 +63,7 @@ export default function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <nav
           className={`flex items-center justify-between rounded-2xl px-4 sm:px-5 py-3 transition-all ${
-            scrolled ? "glass shadow-lg shadow-black/30" : "bg-transparent"
+            scrolled ? "glass shadow-[0_10px_30px_var(--color-shadow)]" : "bg-transparent"
           }`}
         >
           <Link href="/" className="flex items-center gap-2 group">
@@ -73,8 +95,8 @@ export default function Navbar() {
                     href={item.href}
                     className={`relative inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
                       active
-                        ? "text-white"
-                        : "text-[var(--color-text-muted)] hover:text-white"
+                        ? "text-[var(--color-text)]"
+                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
                     }`}
                   >
                     <Icon size={16} />
@@ -82,7 +104,7 @@ export default function Navbar() {
                     {active && (
                       <motion.span
                         layoutId="nav-pill"
-                        className="absolute inset-0 -z-10 rounded-lg bg-white/5 ring-1 ring-white/10"
+                        className="absolute inset-0 -z-10 rounded-lg bg-[var(--color-overlay-soft)] ring-1 ring-[var(--color-overlay-strong)]"
                         transition={{ type: "spring", stiffness: 380, damping: 32 }}
                       />
                     )}
@@ -93,6 +115,13 @@ export default function Navbar() {
           </ul>
 
           <div className="hidden md:flex items-center gap-2">
+            <button
+              aria-label={isDark ? "Ativar modo claro" : "Ativar modo escuro"}
+              onClick={toggleTheme}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-overlay-soft)] text-[var(--color-text)] transition hover:bg-[var(--color-overlay-strong)]"
+            >
+              {mounted ? (isDark ? <Sun size={17} /> : <Moon size={17} />) : <Moon size={17} />}
+            </button>
             <Link
               href="/dashboard"
               className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[var(--color-brand)] to-[var(--color-brand-2)] px-4 py-2 text-sm font-medium text-white shadow-lg shadow-[var(--color-brand)]/20 hover:shadow-[var(--color-brand)]/40 transition-shadow"
@@ -104,7 +133,7 @@ export default function Navbar() {
           <button
             aria-label="Abrir menu"
             onClick={() => setOpen((v) => !v)}
-            className="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-white/10 text-white"
+            className="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-[var(--color-border)] text-[var(--color-text)]"
           >
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -129,7 +158,7 @@ export default function Navbar() {
                       href={item.href}
                       className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm ${
                         active
-                          ? "bg-white/5 text-white"
+                          ? "bg-[var(--color-overlay-soft)] text-[var(--color-text)]"
                           : "text-[var(--color-text-muted)]"
                       }`}
                     >
@@ -140,6 +169,14 @@ export default function Navbar() {
                 );
               })}
             </ul>
+            <button
+              aria-label={isDark ? "Ativar modo claro" : "Ativar modo escuro"}
+              onClick={toggleTheme}
+              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] px-3 py-2 text-sm text-[var(--color-text)] transition hover:bg-[var(--color-overlay-strong)]"
+            >
+              {mounted ? (isDark ? <Sun size={15} /> : <Moon size={15} />) : <Moon size={15} />}
+              {isDark ? "Modo claro" : "Modo escuro"}
+            </button>
           </motion.div>
         )}
       </div>
