@@ -25,21 +25,21 @@ const STATUS_META: Record<
 > = {
   free: {
     label: "Livre",
-    tone: "text-emerald-400",
+    tone: "text-emerald-500",
     bg: "bg-emerald-500/10",
     border: "border-emerald-500/30",
     icon: Car,
   },
   occupied: {
     label: "Ocupada",
-    tone: "text-slate-400",
-    bg: "bg-white/[0.02]",
-    border: "border-white/10",
+    tone: "text-[var(--color-text-muted)]",
+    bg: "bg-[var(--color-overlay-soft)]",
+    border: "border-[var(--color-border)]",
     icon: Car,
   },
   reserved: {
     label: "Reservada",
-    tone: "text-amber-400",
+    tone: "text-amber-500",
     bg: "bg-amber-500/10",
     border: "border-amber-500/30",
     icon: Lock,
@@ -111,7 +111,7 @@ export default function DashboardPage() {
         title="Vagas ao vivo."
         description="Alterne entre dados simulados (Mock) e a leitura real do sensor ESP32."
         actions={
-          <div className="inline-flex rounded-xl border border-white/10 bg-white/5 p-1 backdrop-blur-sm">
+          <div className="inline-flex rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] p-1 backdrop-blur-sm">
             <ToggleButton active={mode === "mock"} onClick={() => setMode("mock")}>
               <CircleDot size={14} /> Mock
             </ToggleButton>
@@ -153,11 +153,11 @@ export default function DashboardPage() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="rounded-3xl border border-white/5 bg-[#0f1117]/50 p-6 backdrop-blur-xl">
+          <div className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm p-6">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
               <div>
                 <h3 className="text-lg font-semibold">Setor A · 7 vagas</h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[var(--color-text-muted)]">
                   {mode === "mock"
                     ? "Simulação atualizando a cada 2s"
                     : "Leitura em tempo real do ESP32 · /api/spots"}
@@ -200,8 +200,10 @@ function ToggleButton({
   return (
     <button
       onClick={onClick}
-      className={`relative inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition ${
-        active ? "text-white" : "text-slate-400 hover:text-white"
+      className={`relative inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors ${
+        active
+          ? "text-white"
+          : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
       }`}
     >
       {active && (
@@ -221,13 +223,13 @@ function ModeBadge({ mode }: { mode: Mode }) {
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold tracking-wider uppercase ${
         mode === "mock"
-          ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/20"
-          : "bg-cyan-500/10 text-cyan-300 border border-cyan-500/20"
+          ? "bg-indigo-500/10 text-indigo-500 dark:text-indigo-300 border border-indigo-500/20"
+          : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border border-cyan-500/20"
       }`}
     >
       <span
         className={`h-1.5 w-1.5 rounded-full ${
-          mode === "mock" ? "bg-indigo-400" : "bg-cyan-400"
+          mode === "mock" ? "bg-indigo-500" : "bg-cyan-500"
         } pulse-ring`}
       />
       {mode === "mock" ? "Modo Mock" : "Modo Real"}
@@ -244,10 +246,10 @@ function ConnectionBanner({
 }) {
   return (
     <div
-      className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm backdrop-blur-xl ${
+      className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm ${
         connected
-          ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-200"
-          : "border-amber-500/20 bg-amber-500/5 text-amber-200"
+          ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-700 dark:text-emerald-200"
+          : "border-amber-500/30 bg-amber-500/5 text-amber-700 dark:text-amber-200"
       }`}
     >
       {connected ? <Wifi size={16} /> : <WifiOff size={16} />}
@@ -274,17 +276,17 @@ function CounterCard({
   const palette = {
     emerald: {
       bar: "from-emerald-500 to-emerald-400",
-      text: "text-emerald-400",
+      text: "text-emerald-500",
       dot: "bg-emerald-500",
     },
     slate: {
       bar: "from-slate-500 to-slate-400",
-      text: "text-slate-300",
+      text: "text-[var(--color-text)]",
       dot: "bg-slate-500",
     },
     amber: {
       bar: "from-amber-500 to-amber-400",
-      text: "text-amber-400",
+      text: "text-amber-500",
       dot: "bg-amber-500",
     },
   }[accent];
@@ -292,9 +294,9 @@ function CounterCard({
   const pct = total > 0 ? (value / total) * 100 : 0;
 
   return (
-    <div className="rounded-3xl border border-white/5 bg-[#0f1117]/40 p-6 backdrop-blur-xl">
+    <div className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm p-6">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+        <span className="text-[10px] font-bold tracking-widest text-[var(--color-text-muted)] uppercase">
           {label}
         </span>
         <span className={`h-2 w-2 rounded-full ${palette.dot}`} />
@@ -308,9 +310,9 @@ function CounterCard({
         >
           {value}
         </motion.span>
-        <span className="text-sm text-slate-500">/ {total}</span>
+        <span className="text-sm text-[var(--color-text-muted)]">/ {total}</span>
       </div>
-      <div className="mt-4 h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
+      <div className="mt-4 h-1.5 w-full rounded-full bg-[var(--chart-track)] overflow-hidden">
         <motion.div
           className={`h-full rounded-full bg-gradient-to-r ${palette.bar}`}
           animate={{ width: `${pct}%` }}
@@ -342,14 +344,14 @@ function SpotCard({ index, status }: { index: number; status: Status }) {
       >
         <Icon size={28} strokeWidth={1.8} />
       </motion.div>
-      <span className="mt-2 text-xs font-semibold text-slate-300">
+      <span className="mt-2 text-xs font-semibold text-[var(--color-text)]">
         Vaga {index + 1}
       </span>
       <span className={`mt-0.5 text-[10px] uppercase tracking-wider ${meta.tone}`}>
         {meta.label}
       </span>
       {status === "free" && (
-        <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-emerald-400 pulse-ring" />
+        <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-emerald-500 pulse-ring" />
       )}
     </motion.div>
   );
@@ -357,7 +359,7 @@ function SpotCard({ index, status }: { index: number; status: Status }) {
 
 function LegendRow() {
   return (
-    <div className="mt-6 flex flex-wrap gap-4 text-xs text-slate-400">
+    <div className="mt-6 flex flex-wrap gap-4 text-xs text-[var(--color-text-muted)]">
       <LegendItem color="bg-emerald-500/80" label="Livre" />
       <LegendItem color="bg-slate-500/60" label="Ocupada" />
       <LegendItem color="bg-amber-500/80" label="Reservada" />
@@ -375,14 +377,15 @@ function LegendItem({ color, label }: { color: string; label: string }) {
 
 function IntegrationHelp() {
   return (
-    <div className="rounded-3xl border border-white/5 bg-[#0f1117]/30 p-6 backdrop-blur-xl">
-      <h4 className="text-sm font-semibold mb-1">
-        Como conectar o ESP32
-      </h4>
-      <p className="text-xs text-slate-500 mb-4">
-        Envie um POST a cada 2 segundos com o array de 7 booleanos. <code className="text-indigo-300">true</code> = vaga livre, <code className="text-indigo-300">false</code> = ocupada.
+    <div className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm p-6">
+      <h4 className="text-sm font-semibold mb-1">Como conectar o ESP32</h4>
+      <p className="text-xs text-[var(--color-text-muted)] mb-4">
+        Envie um POST a cada 2 segundos com o array de 7 booleanos.{" "}
+        <code className="text-indigo-500 dark:text-indigo-300">true</code> = vaga
+        livre, <code className="text-indigo-500 dark:text-indigo-300">false</code>{" "}
+        = ocupada.
       </p>
-      <pre className="rounded-2xl border border-white/5 bg-black/40 p-4 text-[11px] leading-relaxed text-slate-300 overflow-x-auto">
+      <pre className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-2)] p-4 text-[11px] leading-relaxed text-[var(--color-text)] overflow-x-auto">
 {`POST /api/spots
 Content-Type: application/json
 
