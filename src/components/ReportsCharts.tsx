@@ -19,17 +19,18 @@ import {
 import type { HistoricalPoint } from "@/lib/types";
 
 const axisProps = {
-  stroke: "#8a91a8",
+  stroke: "var(--chart-axis)",
   tick: { fontSize: 11 },
   axisLine: false,
   tickLine: false,
 };
 
 const tooltipStyle = {
-  background: "#0b0e17",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background: "var(--chart-tooltip-bg)",
+  border: "1px solid var(--chart-tooltip-border)",
   borderRadius: 12,
   fontSize: 12,
+  color: "var(--color-text)",
 };
 
 export function OccupancyTrend({ data }: { data: HistoricalPoint[] }) {
@@ -46,7 +47,7 @@ export function OccupancyTrend({ data }: { data: HistoricalPoint[] }) {
               <stop offset="100%" stopColor="#6d5cff" stopOpacity={0.02} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 6" stroke="rgba(255,255,255,0.05)" />
+          <CartesianGrid strokeDasharray="3 6" stroke="var(--chart-grid)" />
           <XAxis dataKey="time" {...axisProps} />
           <YAxis unit="%" domain={[0, 100]} {...axisProps} />
           <Tooltip
@@ -71,7 +72,7 @@ export function RevenueChart({ data }: { data: HistoricalPoint[] }) {
     <Card title="Receita por horário" subtitle="Em R$">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 6" stroke="rgba(255,255,255,0.05)" />
+          <CartesianGrid strokeDasharray="3 6" stroke="var(--chart-grid)" />
           <XAxis dataKey="time" {...axisProps} />
           <YAxis {...axisProps} />
           <Tooltip
@@ -98,7 +99,7 @@ export function AvgStayChart({ data }: { data: HistoricalPoint[] }) {
     <Card title="Tempo médio de permanência" subtitle="Em minutos">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 6" stroke="rgba(255,255,255,0.05)" />
+          <CartesianGrid strokeDasharray="3 6" stroke="var(--chart-grid)" />
           <XAxis dataKey="time" {...axisProps} />
           <YAxis {...axisProps} />
           <Tooltip
@@ -172,7 +173,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-[var(--color-surface)]/70 p-4 sm:p-5 h-full flex flex-col">
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-4 sm:p-5 h-full flex flex-col">
       <div className="flex items-start justify-between gap-2">
         <div>
           <h3 className="text-sm font-semibold">{title}</h3>

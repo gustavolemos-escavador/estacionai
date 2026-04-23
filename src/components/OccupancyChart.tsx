@@ -13,7 +13,7 @@ import type { HistoricalPoint } from "@/lib/types";
 
 export default function OccupancyChart({ data }: { data: HistoricalPoint[] }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-[var(--color-surface)]/70 p-4 sm:p-6">
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-4 sm:p-6">
       <div className="flex items-center justify-between mb-3">
         <div>
           <h3 className="text-base font-semibold">Ocupação ao longo do dia</h3>
@@ -32,16 +32,16 @@ export default function OccupancyChart({ data }: { data: HistoricalPoint[] }) {
                 <stop offset="100%" stopColor="#00d1b2" stopOpacity={0.05} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 6" stroke="rgba(255,255,255,0.05)" />
+            <CartesianGrid strokeDasharray="3 6" stroke="var(--chart-grid)" />
             <XAxis
               dataKey="time"
-              stroke="#8a91a8"
+              stroke="var(--chart-axis)"
               tick={{ fontSize: 11 }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
-              stroke="#8a91a8"
+              stroke="var(--chart-axis)"
               tick={{ fontSize: 11 }}
               axisLine={false}
               tickLine={false}
@@ -50,12 +50,13 @@ export default function OccupancyChart({ data }: { data: HistoricalPoint[] }) {
             />
             <Tooltip
               contentStyle={{
-                background: "#0b0e17",
-                border: "1px solid rgba(255,255,255,0.1)",
+                background: "var(--chart-tooltip-bg)",
+                border: "1px solid var(--chart-tooltip-border)",
                 borderRadius: 12,
                 fontSize: 12,
+                color: "var(--color-text)",
               }}
-              labelStyle={{ color: "#e6e9f2" }}
+              labelStyle={{ color: "var(--chart-tooltip-label)" }}
               formatter={(v: number) => [`${v}%`, "Ocupação"]}
             />
             <Area

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ThemeProvider from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "EstacionAI — Estacionamento inteligente com IA",
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#05060a",
+  themeColor: "#f3f5fb",
   width: "device-width",
   initialScale: 1,
 };
@@ -36,11 +37,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <body className="min-h-screen antialiased">
-        <Navbar />
-        <main className="relative">{children}</main>
-        <Footer />
+        <ThemeProvider>
+          <Navbar />
+          <main className="relative">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
