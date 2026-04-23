@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -9,54 +8,71 @@ import {
   Trash2,
   TriangleAlert,
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Notification } from "@/lib/types";
 
 const TYPE_MAP = {
-  info: { icon: Info, color: "text-blue-500", bg: "bg-blue-500/10" },
+  info: {
+    icon: Info,
+    color: "text-sky-400",
+    bg: "bg-sky-500/10",
+    ring: "ring-sky-500/20",
+  },
   success: {
     icon: CheckCircle2,
-    color: "text-[var(--color-ok)]",
-    bg: "bg-[var(--color-ok)]/10",
+    color: "text-emerald-400",
+    bg: "bg-emerald-500/10",
+    ring: "ring-emerald-500/20",
   },
   warning: {
     icon: TriangleAlert,
-    color: "text-[var(--color-warn)]",
-    bg: "bg-[var(--color-warn)]/10",
+    color: "text-amber-400",
+    bg: "bg-amber-500/10",
+    ring: "ring-amber-500/20",
   },
   alert: {
     icon: AlertTriangle,
-    color: "text-[var(--color-danger)]",
-    bg: "bg-[var(--color-danger)]/10",
+    color: "text-rose-400",
+    bg: "bg-rose-500/10",
+    ring: "ring-rose-500/20",
   },
 } as const;
 
 type Filter = "all" | "unread" | Notification["type"];
 
-export default function InboxList({
-  initial,
-}: {
-  initial: Notification[];
-}) {
+const FILTERS: { key: Filter; label: string }[] = [
+  { key: "all", label: "Todas" },
+  { key: "unread", label: "Não lidas" },
+  { key: "alert", label: "Alertas" },
+  { key: "warning", label: "Avisos" },
+  { key: "success", label: "Sucesso" },
+  { key: "info", label: "Info" },
+];
+
+export default function InboxList({ initial }: { initial: Notification[] }) {
   const [items, setItems] = useState<Notification[]>(initial);
   const [filter, setFilter] = useState<Filter>("all");
 
-  const filtered = items.filter((n) => {
-    if (filter === "all") return true;
-    if (filter === "unread") return !n.read;
-    return n.type === filter;
-  });
+  const filtered = useMemo(
+    () =>
+      items.filter((n) => {
+        if (filter === "all") return true;
+        if (filter === "unread") return !n.read;
+        return n.type === filter;
+      }),
+    [items, filter]
+  );
+
+  const unread = useMemo(() => items.filter((n) => !n.read).length, [items]);
 
   const markAll = () =>
     setItems((prev) => prev.map((n) => ({ ...n, read: true })));
-
   const markRead = (id: string) =>
-    setItems((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-
+    setItems((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+    );
   const remove = (id: string) =>
     setItems((prev) => prev.filter((n) => n.id !== id));
-
-  const unread = items.filter((n) => !n.read).length;
 
   return (
     <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 overflow-hidden">
@@ -72,70 +88,70 @@ export default function InboxList({
             </p>
           </div>
         </div>
+
         <div className="flex items-center gap-2 flex-wrap">
-          <div className="inline-flex rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] p-1">
-            {(
-              [
-                ["all", "Todas"],
-                ["unread", "Não lidas"],
-                ["alert", "Alertas"],
-                ["warning", "Avisos"],
-                ["success", "Sucesso"],
-                ["info", "Info"],
-              ] as const
-            ).map(([k, l]) => (
+          <div className="inline-flex flex-wrap rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] p-1">
+            {FILTERS.map(({ key, label }) => (
               <button
-                key={k}
-                onClick={() => setFilter(k)}
-                className={`px-3 py-1.5 text-xs rounded-lg transition ${
-                  filter === k
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${
+                  filter === key
                     ? "bg-[var(--color-overlay-strong)] text-[var(--color-text)]"
                     : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
                 }`}
               >
-                {l}
+                {label}
               </button>
             ))}
           </div>
           <button
             onClick={markAll}
-            className="text-xs rounded-lg border border-[var(--color-border)] bg-[var(--color-overlay-soft)] px-3 py-1.5 hover:bg-[var(--color-overlay-strong)] transition"
+            disabled={unread === 0}
+            className="text-xs rounded-lg border border-[var(--color-border)] bg-[var(--color-overlay-soft)] px-3 py-1.5 transition-colors hover:bg-[var(--color-overlay-strong)] disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Marcar todas como lidas
           </button>
         </div>
       </header>
 
-      <ul className="divide-y divide-[var(--color-border)]">
-        <AnimatePresence initial={false}>
+      {filtered.length === 0 ? (
+        <div className="p-12 text-center text-sm text-[var(--color-text-muted)]">
+          Nenhuma notificação nesse filtro.
+        </div>
+      ) : (
+        <ul className="divide-y divide-[var(--color-border)]">
           {filtered.map((n) => {
             const t = TYPE_MAP[n.type];
             const Icon = t.icon;
             return (
-              <motion.li
+              <li
                 key={n.id}
-                layout
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ type: "spring", stiffness: 260, damping: 26 }}
-                className={`group relative flex items-start gap-3 p-4 sm:p-5 hover:bg-[var(--color-overlay-soft)] transition ${
-                  !n.read ? "bg-[var(--color-overlay-soft)]" : ""
+                className={`group relative flex items-start gap-3 p-4 sm:p-5 transition-colors ${
+                  n.read
+                    ? "hover:bg-[var(--color-overlay-soft)]"
+                    : "bg-[var(--color-overlay-soft)] hover:bg-[var(--color-overlay-strong)]"
                 }`}
               >
                 <span
-                  className={`mt-0.5 inline-flex h-9 w-9 flex-none items-center justify-center rounded-xl ${t.bg} ${t.color}`}
+                  aria-hidden
+                  className={`absolute left-0 top-1/2 -translate-y-1/2 h-8 w-0.5 rounded-r ${
+                    n.read ? "bg-transparent" : "bg-[var(--color-brand-2)]"
+                  }`}
+                />
+                <span
+                  className={`mt-0.5 inline-flex h-9 w-9 flex-none items-center justify-center rounded-xl ring-1 ${t.bg} ${t.color} ${t.ring}`}
                 >
                   <Icon size={16} />
                 </span>
+
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    {!n.read && (
-                      <span className="h-2 w-2 rounded-full bg-[var(--color-brand-2)]" />
-                    )}
                     <h3
                       className={`text-sm ${
-                        n.read ? "text-[var(--color-text-muted)]" : "text-[var(--color-text)] font-medium"
+                        n.read
+                          ? "text-[var(--color-text-muted)]"
+                          : "text-[var(--color-text)] font-semibold"
                       }`}
                     >
                       {n.title}
@@ -144,37 +160,33 @@ export default function InboxList({
                       · {n.time}
                     </span>
                   </div>
-                  <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+                  <p className="mt-1 text-sm text-[var(--color-text-muted)] line-clamp-2">
                     {n.body}
                   </p>
                 </div>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+
+                <div className="flex items-center gap-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                   {!n.read && (
                     <button
                       onClick={() => markRead(n.id)}
-                      className="text-[11px] rounded-lg border border-[var(--color-border)] bg-[var(--color-overlay-soft)] px-2 py-1 hover:bg-[var(--color-overlay-strong)]"
+                      className="text-[11px] rounded-lg border border-[var(--color-border)] bg-[var(--color-overlay-soft)] px-2 py-1 transition-colors hover:bg-[var(--color-overlay-strong)]"
                     >
                       Marcar lida
                     </button>
                   )}
                   <button
                     onClick={() => remove(n.id)}
-                    className="inline-flex items-center justify-center h-7 w-7 rounded-lg border border-[var(--color-border)] bg-[var(--color-overlay-soft)] hover:bg-[var(--color-danger)]/20 hover:border-[var(--color-danger)]/40 transition"
                     aria-label="Remover"
+                    className="inline-flex items-center justify-center h-7 w-7 rounded-lg border border-[var(--color-border)] bg-[var(--color-overlay-soft)] transition-colors hover:bg-rose-500/15 hover:border-rose-500/40 hover:text-rose-400"
                   >
                     <Trash2 size={12} />
                   </button>
                 </div>
-              </motion.li>
+              </li>
             );
           })}
-        </AnimatePresence>
-        {filtered.length === 0 && (
-          <li className="p-12 text-center text-sm text-[var(--color-text-muted)]">
-            Nenhuma notificação nesse filtro.
-          </li>
-        )}
-      </ul>
+        </ul>
+      )}
     </div>
   );
 }

@@ -31,6 +31,7 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -41,39 +42,29 @@ export default function Navbar() {
     setOpen(false);
   }, [pathname]);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const isDark = resolvedTheme === "dark";
-
-  const toggleTheme = () => {
-    setTheme(isDark ? "light" : "dark");
-  };
+  const toggleTheme = () => setTheme(isDark ? "light" : "dark");
 
   return (
-    <motion.header
-      initial={{ y: -24, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 inset-x-0 z-50 transition-all ${
+    <header
+      className={`fixed top-0 inset-x-0 z-50 transition-[padding] duration-200 ${
         scrolled ? "py-2" : "py-4"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <nav
-          className={`flex items-center justify-between rounded-2xl px-4 sm:px-5 py-3 transition-all ${
+          className={`flex items-center justify-between rounded-2xl px-4 sm:px-5 py-3 transition-colors duration-200 ${
             scrolled ? "glass shadow-[0_10px_30px_var(--color-shadow)]" : "bg-transparent"
           }`}
         >
-          <Link href="/" className="flex items-center gap-2 group">
-            <motion.span
-              whileHover={{ rotate: -10, scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-brand)] to-[var(--color-brand-2)] text-white shadow-lg shadow-[var(--color-brand)]/30"
-            >
+          <Link
+            href="/"
+            prefetch
+            className="flex items-center gap-2 group shrink-0"
+          >
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-brand)] to-[var(--color-brand-2)] text-white shadow-lg shadow-[var(--color-brand)]/30 transition-transform group-hover:-rotate-6">
               <CarFront size={18} strokeWidth={2.4} />
-            </motion.span>
+            </span>
             <span className="text-base sm:text-lg font-semibold tracking-tight">
               Estacion
               <span className="bg-gradient-to-r from-[var(--color-brand)] to-[var(--color-brand-2)] bg-clip-text text-transparent">
@@ -93,6 +84,7 @@ export default function Navbar() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    prefetch
                     className={`relative inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
                       active
                         ? "text-[var(--color-text)]"
@@ -105,7 +97,11 @@ export default function Navbar() {
                       <motion.span
                         layoutId="nav-pill"
                         className="absolute inset-0 -z-10 rounded-lg bg-[var(--color-overlay-soft)] ring-1 ring-[var(--color-overlay-strong)]"
-                        transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 500,
+                          damping: 36,
+                        }}
                       />
                     )}
                   </Link>
@@ -119,11 +115,17 @@ export default function Navbar() {
               aria-label={isDark ? "Ativar modo claro" : "Ativar modo escuro"}
               onClick={toggleTheme}
               className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-overlay-soft)] text-[var(--color-text)] transition hover:bg-[var(--color-overlay-strong)]"
+              suppressHydrationWarning
             >
-              {mounted ? (isDark ? <Sun size={17} /> : <Moon size={17} />) : <Moon size={17} />}
+              {mounted ? (
+                isDark ? <Sun size={17} /> : <Moon size={17} />
+              ) : (
+                <Moon size={17} className="opacity-0" />
+              )}
             </button>
             <Link
               href="/dashboard"
+              prefetch
               className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[var(--color-brand)] to-[var(--color-brand-2)] px-4 py-2 text-sm font-medium text-white shadow-lg shadow-[var(--color-brand)]/20 hover:shadow-[var(--color-brand)]/40 transition-shadow"
             >
               Abrir painel
@@ -140,11 +142,7 @@ export default function Navbar() {
         </nav>
 
         {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="md:hidden mt-2 glass rounded-2xl p-2"
-          >
+          <div className="md:hidden mt-2 glass rounded-2xl p-2">
             <ul className="flex flex-col">
               {NAV.map((item) => {
                 const Icon = item.icon;
@@ -156,7 +154,8 @@ export default function Navbar() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm ${
+                      prefetch
+                      className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition-colors ${
                         active
                           ? "bg-[var(--color-overlay-soft)] text-[var(--color-text)]"
                           : "text-[var(--color-text-muted)]"
@@ -172,14 +171,19 @@ export default function Navbar() {
             <button
               aria-label={isDark ? "Ativar modo claro" : "Ativar modo escuro"}
               onClick={toggleTheme}
+              suppressHydrationWarning
               className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-overlay-soft)] px-3 py-2 text-sm text-[var(--color-text)] transition hover:bg-[var(--color-overlay-strong)]"
             >
-              {mounted ? (isDark ? <Sun size={15} /> : <Moon size={15} />) : <Moon size={15} />}
-              {isDark ? "Modo claro" : "Modo escuro"}
+              {mounted ? (
+                isDark ? <Sun size={15} /> : <Moon size={15} />
+              ) : (
+                <Moon size={15} className="opacity-0" />
+              )}
+              {mounted ? (isDark ? "Modo claro" : "Modo escuro") : "Tema"}
             </button>
-          </motion.div>
+          </div>
         )}
       </div>
-    </motion.header>
+    </header>
   );
 }
