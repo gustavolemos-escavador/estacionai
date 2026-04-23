@@ -1,0 +1,69 @@
+# docker-compose.yml
+# Note: top-level 'version' key is deprecated in Compose v2+ and intentionally omitted.
+
+services:
+  # ─────────────────────────────────────────
+  # Database
+  # ─────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Postgres is intentionally NOT exposed to the host.
+    # Only backend reaches it via the internal Docker network.
+
+  # ─────────────────────────────────────────
+  # Backend (Express + Prisma)
+  # ─────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL}
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        # Waits for the healthcheck to pass before starting.
+        # Without 'condition: service_healthy', depends_on is only
+        # an ordering hint and does NOT wait for postgres to be ready.
+        condition: service_healthy
+
+  # ─────────────────────────────────────────
+  # Frontend (Next.js)
+  # ─────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      # NEXT_PUBLIC_* vars are embedded at BUILD time by Next.js.
+      # To make them available here at runtime, they must also be
+      # passed as ARGs during 'docker build', or use a runtime
+      # configuration strategy (next/headers, server components, etc.).
+      # For now they are set here for documentation purposes.
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
