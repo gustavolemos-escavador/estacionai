@@ -45,3 +45,14 @@ next-env.d.ts
 backend/node_modules
 backend/dist
 backend/.env
+
+# local reference images / screenshots
+*.jpg
+*.jpeg
+*.png
+!public/**/*.jpg
+!public/**/*.jpeg
+!public/**/*.png
+!src/**/*.jpg
+!src/**/*.jpeg
+!src/**/*.png
