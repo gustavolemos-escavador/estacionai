@@ -9,8 +9,14 @@ const START_X = -6;
 const SPOT_X = 1.2;
 const CAR_Y = 0.32;
 
+const CYCLE = 5.2;
+const OCCUPIED_START = 0.58;
+const OCCUPIED_END = 0.92;
+
 const BRAND = "#6d5cff";
 const BRAND_2 = "#00d1b2";
+const SIGNAL_RED = new THREE.Color("#ef4444");
+const SIGNAL_GREEN = new THREE.Color("#22c55e");
 
 function easeInOut(t: number) {
   return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -41,6 +47,7 @@ export default function HeroScene() {
 
       <Floor />
       <ParkingSpot />
+      <Signal />
       <Car />
     </Canvas>
   );
@@ -106,7 +113,6 @@ function Car() {
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
-    const CYCLE = 5.2;
     const t = (clock.elapsedTime % CYCLE) / CYCLE;
 
     let x: number;
@@ -115,16 +121,16 @@ function Car() {
     if (t < 0.06) {
       x = START_X;
       scale = t / 0.06;
-    } else if (t < 0.62) {
-      const p = (t - 0.06) / 0.56;
+    } else if (t < OCCUPIED_START) {
+      const p = (t - 0.06) / (OCCUPIED_START - 0.06);
       x = START_X + (SPOT_X - START_X) * easeInOut(p);
       scale = 1;
-    } else if (t < 0.9) {
+    } else if (t < OCCUPIED_END) {
       x = SPOT_X;
       scale = 1;
     } else {
       x = SPOT_X;
-      scale = 1 - (t - 0.9) / 0.1;
+      scale = 1 - (t - OCCUPIED_END) / (1 - OCCUPIED_END);
     }
 
     ref.current.position.set(x, CAR_Y, 0);
@@ -199,6 +205,79 @@ function Car() {
         scale={3}
         blur={2.2}
         far={1.4}
+      />
+    </group>
+  );
+}
+
+function Signal() {
+  const lampRef = useRef<THREE.MeshStandardMaterial>(null);
+  const haloRef = useRef<THREE.MeshBasicMaterial>(null);
+  const lightRef = useRef<THREE.PointLight>(null);
+
+  useFrame(({ clock }) => {
+    if (!lampRef.current || !lightRef.current || !haloRef.current) return;
+    const t = (clock.elapsedTime % CYCLE) / CYCLE;
+    const occupied = t >= OCCUPIED_START && t < OCCUPIED_END;
+    const target = occupied ? SIGNAL_RED : SIGNAL_GREEN;
+
+    lampRef.current.color.lerp(target, 0.18);
+    lampRef.current.emissive.lerp(target, 0.18);
+    haloRef.current.color.lerp(target, 0.18);
+    lightRef.current.color.lerp(target, 0.18);
+
+    const pulse = 1 + Math.sin(clock.elapsedTime * 3) * 0.12;
+    lampRef.current.emissiveIntensity = (occupied ? 1.8 : 1.6) * pulse;
+    lightRef.current.intensity = (occupied ? 3.2 : 3) * pulse;
+  });
+
+  const postHeight = 1.9;
+  const postX = SPOT_X - 1.2;
+  const postZ = 1.55;
+
+  return (
+    <group position={[postX, 0, postZ]}>
+      <mesh position={[0, postHeight / 2, 0]} castShadow>
+        <cylinderGeometry args={[0.04, 0.05, postHeight, 12]} />
+        <meshStandardMaterial color="#1a1f30" metalness={0.6} roughness={0.4} />
+      </mesh>
+      <mesh position={[0, postHeight + 0.02, 0]}>
+        <boxGeometry args={[0.3, 0.1, 0.12]} />
+        <meshStandardMaterial color="#12172a" metalness={0.4} roughness={0.6} />
+      </mesh>
+      <mesh position={[0, postHeight + 0.28, 0]} castShadow>
+        <boxGeometry args={[0.4, 0.42, 0.22]} />
+        <meshStandardMaterial color="#0a0d16" metalness={0.6} roughness={0.4} />
+      </mesh>
+      <mesh position={[0, postHeight + 0.28, 0.115]}>
+        <sphereGeometry args={[0.12, 24, 24]} />
+        <meshStandardMaterial
+          ref={lampRef}
+          color={SIGNAL_GREEN}
+          emissive={SIGNAL_GREEN}
+          emissiveIntensity={1.6}
+          metalness={0.2}
+          roughness={0.3}
+        />
+      </mesh>
+      <mesh position={[0, postHeight + 0.28, 0.12]}>
+        <sphereGeometry args={[0.22, 18, 18]} />
+        <meshBasicMaterial
+          ref={haloRef}
+          color={SIGNAL_GREEN}
+          transparent
+          opacity={0.18}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+      <pointLight
+        ref={lightRef}
+        position={[0, postHeight + 0.28, 0.4]}
+        intensity={3}
+        color={SIGNAL_GREEN}
+        distance={3}
+        decay={2}
       />
     </group>
   );

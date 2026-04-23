@@ -23,7 +23,6 @@ export default function Hero() {
   });
 
   const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
 
   return (
     <section
@@ -33,7 +32,7 @@ export default function Hero() {
       <div className="absolute inset-0 grid-lines opacity-60 pointer-events-none" />
 
       <motion.div
-        style={{ y, opacity }}
+        style={{ y }}
         className="relative mx-auto max-w-7xl px-4 sm:px-6"
       >
         <div className="flex flex-col items-center text-center">
